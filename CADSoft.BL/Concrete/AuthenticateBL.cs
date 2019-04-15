@@ -13,7 +13,18 @@ namespace CADSoft.BL.Concrete
 {
     public class AuthenticateBL : IAuthenticateBL
     {
-        ISessionPreviewDAL _sessionPreviewDAL = new SessionPreviesDAL(new RMContext());
+        RMContext context;
+        ISessionPreviewDAL _sessionPreviewDAL;
+        IUserDAL _userDAL;
+        ISessionDAL _sessionDAL;
+
+        public AuthenticateBL()
+        {
+            context = new RMContext();
+            _sessionPreviewDAL = new SessionPreviewDAL(context);
+            _userDAL = new UserDAL(context);
+            _sessionDAL = new SessionDAL(context);
+        }
 
         public BaseResponse<AuthenticationResponse> Login(AuthenticationRequest request)
         {
@@ -24,20 +35,28 @@ namespace CADSoft.BL.Concrete
                 throw new Exception("Username or Password Can Not Be Null");
             }
 
-            if (request.UserName == "admin" && request.Password == "123")
+            User user = _userDAL.Get(x => x.UserName == request.UserName);
+
+            if (user.PasswordHash == request.Password)
             {
                 new SessionBL().SetCurrentPrincipal(new UserInfo() {
-                    UserName = request.UserName,
-                    Password = request.Password,
-                    BirthDate = DateTime.Now,
-                    Email = "aaa@ccc.com",
-                    ID = 1,
-                    Name = "Emirhan",
-                    Surname = "Aksoy",
-                    PhoneNumber = "0000000000"
+                    UserName = user.UserName,
+                    Password = user.PasswordHash,
+                    Email = user.Email,
+                    ID = user.ID,
+                    Name = user.Name,
+                    Surname = user.Surname
                 });
 
                 response.Token = JWTBusiness.GenerateToken(request.UserName);
+                SessionPreview model = new SessionPreview() {
+                    ExpiryDate = DateTime.Now.AddHours(1),
+                    Token = response.Token,
+                    UserID = user.ID,
+                    CreateUserID = user.ID,
+                    UpdateUserID = user.ID
+                };
+                _sessionPreviewDAL.Add(model);
                 return new BaseResponse<AuthenticationResponse>(response);
             }
             else
@@ -79,8 +98,25 @@ namespace CADSoft.BL.Concrete
 
         public void ValidateToken(string token)
         {
-            //DataBase Token kontrol tablosuna istek atıp username i alıcaz
-            string username = "admin";
+            SessionPreview sPreview = _sessionPreviewDAL.Get(x => x.Token == token);
+            if (sPreview == null)
+            {
+                throw new Exception("Not Authorized For This Request.");
+            }
+            if (sPreview.ExpiryDate <= DateTime.Now)
+            {
+                _sessionDAL.Add(new Session()
+                {
+                    CreateUserID = sPreview.CreateUserID,
+                    ExpiryDate = sPreview.ExpiryDate,
+                    Token = sPreview.Token,
+                    UpdateUserID = sPreview.UpdateUserID,
+                    UserID = sPreview.UserID
+                });
+                _sessionPreviewDAL.HardDelete(sPreview);
+                throw new Exception("Session Expired!");
+            }
+            string username = sPreview.User.UserName;
 
             var tokenUsername = JWTBusiness.ValidateToken(token);
 

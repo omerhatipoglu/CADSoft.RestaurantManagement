@@ -53,7 +53,7 @@
     <Compile Include="Abstract\IUserDAL.cs" />
     <Compile Include="BaseRepository.cs" />
     <Compile Include="Concrete\SessionDAL.cs" />
-    <Compile Include="Concrete\SessionPreviesDAL.cs" />
+    <Compile Include="Concrete\SessionPreviewDAL.cs" />
     <Compile Include="Concrete\UserDAL.cs" />
     <Compile Include="IBaseRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

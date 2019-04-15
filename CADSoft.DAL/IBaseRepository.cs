@@ -7,11 +7,13 @@ namespace CADSoft.DAL
 {
     public interface IBaseRepository<T> where T : class, IEntity
     {
-        void Add(T entity);
+        T Add(T entity);
 
         void Update(T entity);
 
-        void Delete(T entity);
+        void SoftDelete(int id);
+
+        void HardDelete(T entity);
 
         void Delete(Expression<Func<T, bool>> where);
 
