@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace CADSoft.DAL
 {
-    public class BaseRepository<T> where T : class, IEntity
+    public class BaseRepository<T> where T : BaseModel, IEntity
     {
         private RMContext dataContext;
         private readonly IDbSet<T> dbSet;
@@ -19,27 +19,38 @@ namespace CADSoft.DAL
             dbSet = context.Set<T>();
         }
 
-        public virtual void Add(T entity)
+        public virtual T Add(T entity)
         {
             dbSet.Add(entity);
+            dataContext.SaveChanges();
+            return entity;
         }
 
         public virtual void Update(T entity)
         {
             dbSet.Attach(entity);
             dataContext.Entry(entity).State = EntityState.Modified;
+            dataContext.SaveChanges();
         }
 
-        public virtual void Delete(T entity)
+        public virtual void SoftDelete(int id)
+        {
+            T entity = dbSet.Find(id);
+            entity.IsDeleted = true;
+            Update(entity);
+        }
+
+        public virtual void HardDelete(T entity)
         {
             dbSet.Remove(entity);
+            dataContext.SaveChanges();
         }
 
         public virtual void Delete(Expression<Func<T, bool>> where)
         {
             IEnumerable<T> objects = dbSet.Where<T>(where).AsEnumerable();
             foreach (T obj in objects)
-                dbSet.Remove(obj);
+                SoftDelete(obj.ID);
         }
 
         public virtual T GetById(int id)
