@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CADSoft.Entity", "CADSoft.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CADSoft.DAL", "CADSoft.DAL\CADSoft.DAL.csproj", "{4D96A764-58C2-4C6D-B958-8C1A9AAF2EE4}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "RMDB", "RMDB\RMDB.sqlproj", "{83067C71-5330-4B14-A7E4-B6447A896401}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,12 @@ Global
 		{4D96A764-58C2-4C6D-B958-8C1A9AAF2EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D96A764-58C2-4C6D-B958-8C1A9AAF2EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D96A764-58C2-4C6D-B958-8C1A9AAF2EE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83067C71-5330-4B14-A7E4-B6447A896401}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
