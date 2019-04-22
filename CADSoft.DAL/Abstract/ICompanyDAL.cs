@@ -2,7 +2,7 @@
 
 namespace CADSoft.DAL.Abstract
 {
-    public interface ISessionDAL : IBaseRepository<Session>
+    public interface ICompanyDAL : IBaseRepository<Company>
     {
     }
 }

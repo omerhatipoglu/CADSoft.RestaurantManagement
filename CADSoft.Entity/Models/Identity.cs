@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Principal;
 
 namespace CADSoft.Entity.Models
 {
@@ -11,7 +6,7 @@ namespace CADSoft.Entity.Models
     {
         public Identity(UserInfo user)
         {
-            this.UserInfo = user;
+            UserInfo = user;
         }
 
         public UserInfo UserInfo { get; set; }
@@ -27,13 +22,20 @@ namespace CADSoft.Entity.Models
             }
         }
 
-        public string AuthenticationType { get {
+        public string AuthenticationType
+        {
+            get
+            {
                 return "asd";
-            } }
+            }
+        }
 
-        public bool IsAuthenticated { get
+        public bool IsAuthenticated
+        {
+            get
             {
                 return UserInfo.ID > 0;
-            } }
+            }
+        }
     }
 }

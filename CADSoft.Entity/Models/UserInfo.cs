@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CADSoft.Entity.Models
 {
@@ -16,5 +12,7 @@ namespace CADSoft.Entity.Models
         public DateTime BirthDate { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string AccID { get; set; }
+        public string ConnectionString { get; set; }
     }
 }

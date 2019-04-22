@@ -12,6 +12,7 @@ namespace CADSoft.Entity.DBContext
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<SessionPreview> SessionPreview { get; set; }
+        public virtual DbSet<Company> Company { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -25,6 +26,12 @@ namespace CADSoft.Entity.DBContext
                 .HasMany(x => x.SessionPreview)
                 .WithRequired(x => x.User)
                 .HasForeignKey(x => x.UserID)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Company>()
+                .HasMany(x => x.User)
+                .WithRequired(x => x.Company)
+                .HasForeignKey(x => x.CompanyID)
                 .WillCascadeOnDelete(false);
         }
     }

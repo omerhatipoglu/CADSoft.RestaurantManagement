@@ -51,9 +51,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseModel.cs" />
+    <Compile Include="ComContext\ComContext.cs" />
+    <Compile Include="ComContext\Test.cs" />
     <Compile Include="DBContext\RMContext.cs" />
     <Compile Include="DBContext\Session.cs" />
     <Compile Include="DBContext\SessionPreview.cs" />
+    <Compile Include="DBContext\Company.cs" />
     <Compile Include="DBContext\User.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="Models\AuthenticationHeader.cs" />

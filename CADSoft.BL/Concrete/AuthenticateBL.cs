@@ -17,6 +17,8 @@ namespace CADSoft.BL.Concrete
         ISessionPreviewDAL _sessionPreviewDAL;
         IUserDAL _userDAL;
         ISessionDAL _sessionDAL;
+        ICompanyDAL _companyDAL;
+        SessionBL sessionBL = new SessionBL();
 
         public AuthenticateBL()
         {
@@ -24,6 +26,7 @@ namespace CADSoft.BL.Concrete
             _sessionPreviewDAL = new SessionPreviewDAL(context);
             _userDAL = new UserDAL(context);
             _sessionDAL = new SessionDAL(context);
+            _companyDAL = new CompanyDAL(context);
         }
 
         public BaseResponse<AuthenticationResponse> Login(AuthenticationRequest request)
@@ -36,18 +39,19 @@ namespace CADSoft.BL.Concrete
             }
 
             User user = _userDAL.Get(x => x.UserName == request.UserName);
+            if (user == null)
+            {
+                throw new Exception("Wrong Username or Password.");
+            }
+
+            Company company = _companyDAL.Get(x => x.ID == user.CompanyID);
+            if (company == null)
+            {
+                throw new Exception("Wrong Username or Password.");
+            }
 
             if (user.PasswordHash == request.Password)
             {
-                new SessionBL().SetCurrentPrincipal(new UserInfo() {
-                    UserName = user.UserName,
-                    Password = user.PasswordHash,
-                    Email = user.Email,
-                    ID = user.ID,
-                    Name = user.Name,
-                    Surname = user.Surname
-                });
-
                 response.Token = JWTBusiness.GenerateToken(request.UserName);
                 SessionPreview model = new SessionPreview() {
                     ExpiryDate = DateTime.Now.AddHours(1),
@@ -57,6 +61,19 @@ namespace CADSoft.BL.Concrete
                     UpdateUserID = user.ID
                 };
                 _sessionPreviewDAL.Add(model);
+
+                UserInfo userInfo = new UserInfo()
+                {
+                    UserName = user.UserName,
+                    Password = user.PasswordHash,
+                    Email = user.Email,
+                    ID = user.ID,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    ConnectionString = "data source=" + company.DBIP + ";initial catalog=" + company.DBName + ";integrated security=True;MultipleActiveResultSets=True;App=EntityFramework"
+                };
+                sessionBL.SetCurrentPrincipal(userInfo);
+
                 return new BaseResponse<AuthenticationResponse>(response);
             }
             else
@@ -87,11 +104,11 @@ namespace CADSoft.BL.Concrete
             if (authHeader == null)
                 throw new Exception("Authentication Header Not Found");
             if (authHeader.UserID <= 0)
-                throw new Exception("Missing UserId Credetial From Request");
+                throw new Exception("Missing UserId Credential From Request");
             if (string.IsNullOrEmpty(authHeader.Token))
-                throw new Exception("Missing UserId Credetial From Request");
+                throw new Exception("Missing UserId Credential From Request");
             if (string.IsNullOrEmpty(authHeader.TimeSpan))
-                throw new Exception("Missing TimeSpan Credetial From Request");
+                throw new Exception("Missing TimeSpan Credential From Request");
 
             ValidateToken(authHeader.Token);
         }
@@ -116,6 +133,9 @@ namespace CADSoft.BL.Concrete
                 _sessionPreviewDAL.HardDelete(sPreview);
                 throw new Exception("Session Expired!");
             }
+            sPreview.ExpiryDate = DateTime.Now.AddHours(1);
+            _sessionPreviewDAL.Update(sPreview);
+
             string username = sPreview.User.UserName;
 
             var tokenUsername = JWTBusiness.ValidateToken(token);
@@ -124,6 +144,8 @@ namespace CADSoft.BL.Concrete
             {
                 throw new Exception("Not Authorized For This Request.");
             }
+
+            sessionBL.GetSessionModel(tokenUsername);
         }
     }
 }
