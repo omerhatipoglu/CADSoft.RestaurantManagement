@@ -1,4 +1,5 @@
 ﻿using CADSoft.Entity;
+using CADSoft.Entity.ComContext;
 using CADSoft.Entity.DBContext;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,13 @@ using System.Linq.Expressions;
 
 namespace CADSoft.DAL
 {
-    public class BaseRepository<T> where T : BaseModel, IEntity
+    public class BaseRepository<T, TContext> where T : BaseModel, IEntity
+        where TContext : DbContext
     {
-        private RMContext dataContext;
+        private TContext dataContext;
         private readonly IDbSet<T> dbSet;
 
-        protected BaseRepository(RMContext context)
+        protected BaseRepository(TContext context)
         {
             dataContext = context;
             dbSet = context.Set<T>();

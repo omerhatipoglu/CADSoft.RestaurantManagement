@@ -20,6 +20,9 @@ namespace CADSoft.Entity.DBContext
         public string Name { get; set; }
 
         [Required]
+        public int CompanyID { get; set; }
+
+        [Required]
         [StringLength(50)]
         public string Surname { get; set; }
 
@@ -37,6 +40,8 @@ namespace CADSoft.Entity.DBContext
         public string Email { get; set; }
 
         public bool? EmailConfirmed { get; set; }
+
+        public virtual Company Company { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Session> Session { get; set; }

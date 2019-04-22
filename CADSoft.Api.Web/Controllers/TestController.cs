@@ -1,16 +1,24 @@
-﻿using CADSoft.Api.Web.Attributes;
+﻿using CADSoft.BL.Abstract;
+using CADSoft.BL.Concrete;
 using CADSoft.Entity.Models.Response;
 using System.Web.Http;
 
 namespace CADSoft.Api.Web.Controllers
 {
-    [AuthenticateUser]
-    public class TestController : ApiController
+    public class TestController : ApiControllerBase
     {
-        [HttpPost]
-        public BaseResponse<string> Test()
+        ITestBL _testBL;
+
+        public TestController()
         {
-            return new BaseResponse<string>("true");
+        }
+
+        [HttpPost]
+        public BaseResponse<string> Test(string request)
+        {
+            _testBL = new TestBL();
+
+            return _testBL.AddTest(request);
         }
     }
 }
